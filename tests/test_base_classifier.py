@@ -3,19 +3,15 @@ from pager import PageModel, PageModelUnit, PhisicalModel, WordsToOneBlock
 from scr.base_classifier import BaseClassifier
 class TestBaseClassifier(unittest.TestCase):
     def setUp(self):
-        self.page = PageModel(page_units=[
-            PageModelUnit(id="phisical_model",
-                          sub_model=PhisicalModel(),
-                          extractors=[],
-                          converters={"words_model": WordsToOneBlock()})
-        ])
+        self.phisical_model = PhisicalModel()
 
-        self.page.read_from_file('../../PageR-main/tests/files/blocks.json')
+
+        self.phisical_model.read_from_file('files/blocks.json')
 
         self.extractor = BaseClassifier()
 
     def test_extract_changes_label_to_text(self):
-        model = self.page.page_units[0].sub_model
+        model = self.phisical_model
 
         self.extractor.extract(model)
 
