@@ -1,12 +1,12 @@
 import unittest
-from pager import PageModel, PageModelUnit, PhisicalModel, WordsToOneBlock
+from pager import PhisicalModel
 from scr.base_classifier import BaseClassifier
 class TestBaseClassifier(unittest.TestCase):
     def setUp(self):
         self.phisical_model = PhisicalModel()
 
 
-        self.phisical_model.read_from_file('files/blocks.json')
+        self.phisical_model.read_from_file('tests/files/blocks.json')
 
         self.extractor = BaseClassifier()
 
