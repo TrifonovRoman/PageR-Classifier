@@ -10,4 +10,4 @@ class BaseClassifier(BaseExtractor):
 
     def _classification(self, graph):
         result = self.mlp_loaded(graph)
-        return "текст" if result > 0.5 else "заголовок"
+        return "text" if result > 0.5 else "header"
