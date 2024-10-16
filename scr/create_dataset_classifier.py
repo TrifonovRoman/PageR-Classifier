@@ -28,7 +28,7 @@ def get_subgraphs_from_blocks(blocks, graph):
             "A": [[], []],
             "nodes_feature": [],
             "edges_feature": [],
-            "true_edges": []
+            "label": block.get_info('label')
         }
 
         block_nodes = []
@@ -42,12 +42,15 @@ def get_subgraphs_from_blocks(blocks, graph):
                 subgraph["A"][0].append(block_nodes.index(n1))
                 subgraph["A"][1].append(block_nodes.index(n2))
                 subgraph["edges_feature"].append(graph["edges_feature"][i])
-                subgraph["true_edges"].append(is_one_block(words[n1], words[n2], blocks))
 
         subgraphs.append(subgraph)
 
     return subgraphs
 
+def get_block(bl):
+    b = ImageSegment(dict_p_size=bl)
+    b.add_info('label', bl['label'])
+    return b
 
 def get_graphs_from_file(file_name):
     with open(file_name, "r") as f:
@@ -60,7 +63,7 @@ def get_graphs_from_file(file_name):
     page_model.extract()
     graph = page_model.to_dict()
 
-    blocks = [ImageSegment(dict_p_size=bl) for bl in publaynet_rez]
+    blocks = [get_block(bl) for bl in publaynet_rez]
 
     subgraphs = get_subgraphs_from_blocks(blocks, graph)
 
@@ -86,8 +89,11 @@ if __name__ == "__main__":
     N = len(files)
 
     for i, json_file in enumerate(files):
-        subgraphs = get_graphs_from_file(os.path.join(args.path_dir_jsons, json_file))
-
+        subgraphs = []
+        try:
+            subgraphs = get_graphs_from_file(os.path.join(args.path_dir_jsons, json_file))
+        except:
+            print(json_file)
         for subgraph in subgraphs:
             dataset["dataset"].append(subgraph)
 
