@@ -17,9 +17,6 @@ def train_one_step(model, batch, opt, loss_list):
     dw_array = [[] for _ in range(count_matrix_var)]
     for i, graph in enumerate(batch):
         A, H0, true_label = get_Mtrxs(graph)
-        if A.shape[0] == 0:
-            # print(f"Пропущен пустой граф в батче {i}")
-            continue
         true_label = tf.constant([1 if i == true_label else 0 for i in range(5)], dtype=tf.float32)
         with tf.GradientTape() as tape:
             pred_label = model(A, H0)
@@ -53,20 +50,20 @@ def train_model(params, model, dataset, path_save, save_frequency=5):
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser(description='train dataset')
-    # parser.add_argument('--epochs', type=int, nargs='?', required=True)
-    # parser.add_argument('--batch_size', type=int, nargs='?', required=True)
-    # parser.add_argument('--learning_rate', type=float, nargs='?', required=True)
-    # parser.add_argument('--path_dataset', type=str, nargs='?', required=True)
-    # parser.add_argument('--name_model', type=str, nargs='?', required=True)
-    # parser.add_argument('--fsave', type=int, nargs='?', required=True)
-    # args = parser.parse_args()
+    parser = argparse.ArgumentParser(description='train dataset')
+    parser.add_argument('--epochs', type=int, nargs='?', required=True)
+    parser.add_argument('--batch_size', type=int, nargs='?', required=True)
+    parser.add_argument('--learning_rate', type=float, nargs='?', required=True)
+    parser.add_argument('--path_dataset', type=str, nargs='?', required=True)
+    parser.add_argument('--name_model', type=str, nargs='?', required=True)
+    parser.add_argument('--fsave', type=int, nargs='?', required=True)
+    args = parser.parse_args()
     params = {
-        "learning_rate": 0.5,
-        "epochs": 10,
-        "batch_size": 100
+        "learning_rate": args.learning_rate,
+        "epochs": args.epochs,
+        "batch_size": args.batch_size
     }
-    with open('../roma_dataset.json', "r") as f:
+    with open(args.path_dataset, "r") as f:
         dataset = json.load(f)['dataset']
 
     print("DATASET INFO:")
@@ -75,11 +72,11 @@ if __name__ == "__main__":
     print(f"\t A:", np.shape(dataset[0]["A"]))
     print(f"\t nodes_feature:", np.shape(dataset[0]["nodes_feature"]))
     print(f"\t edges_feature:", np.shape(dataset[0]["edges_feature"]))
-    print(f"\t label:", dataset[0]["label"])
+    print(f"\t true_edges:", np.shape(dataset[0]["true_edges"]))
     print("end:", dataset[-1].keys())
     print(f"\t A:", np.shape(dataset[-1]["A"]))
     print(f"\t nodes_feature:", np.shape(dataset[-1]["nodes_feature"]))
     print(f"\t edges_feature:", np.shape(dataset[-1]["edges_feature"]))
-    print(f"\t label:", dataset[-1]["label"])
+    print(f"\t true_edges:", np.shape(dataset[-1]["true_edges"]))
     model = get_model()
-    train_model(params, model, dataset, 'my_model', 5)
+    train_model(params, model, dataset, args.name_model, args.fsave)

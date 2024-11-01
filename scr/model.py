@@ -6,6 +6,7 @@ params = {
     "output_size": 3,
 }
 
+
 def get_model(path=None):
     l1 = params["count_neuron_layer_1"]
     l2 = params["count_neuron_layer_2"]
@@ -13,6 +14,7 @@ def get_model(path=None):
     model = BlockClassifier(l1, l2, output_size)
     if path is None:
         return model
+
 
 class MyGraphConv(tf.Module):
     def __init__(self, input_size, output_size, activation_fun):
@@ -25,6 +27,7 @@ class MyGraphConv(tf.Module):
             tf.matmul(tf.matmul(A, H), self.W) - tf.matmul(H, self.B)
         )
         return H_prime
+
 
 class BlockClassifier(tf.Module):
     def __init__(self, l1, l2, output_size):
@@ -47,7 +50,10 @@ class BlockClassifier(tf.Module):
     def save(self, path):
         tf.saved_model.save(self, path)
 
+
 @tf.function
 def my_loss(label_pred, true_label):
     loss = tf.keras.losses.CategoricalCrossentropy()
     return loss(label_pred, true_label)
+
+

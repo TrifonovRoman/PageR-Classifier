@@ -5,10 +5,10 @@ from collections import defaultdict
 
 def get_need_model(graph):
     if not graph["A"] or not graph["A"][0] or not graph["A"][1]:
-        # Mtrx = tf.eye(1, dtype=tf.float32)
-        # H0 = tf.ones([1, 9], dtype=tf.float32)
-        return tf.zeros([0, 0]), tf.zeros([0, 0])
-        # return Mtrx, H0
+        Mtrx = tf.eye(1, dtype=tf.float32)
+        H0 = tf.ones([1, 9], dtype=tf.float32)
+        # return tf.zeros([0, 0]), tf.zeros([0, 0])
+        return Mtrx, H0
     else:
         N = max(max(graph["A"][0]) + 1, max(graph["A"][1]) + 1)
 
